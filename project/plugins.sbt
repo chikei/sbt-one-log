@@ -1,9 +1,5 @@
-addSbtPlugin("com.github.gseitz" % "sbt-release" % "0.8.3")
+addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.3")
 
-libraryDependencies <+= sbtVersion("org.scala-sbt" % "scripted-plugin" % _)
+addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.0.0")
 
-addSbtPlugin("org.xerial.sbt" % "sbt-sonatype" % "0.2.2")
-
-addSbtPlugin("com.typesafe.sbt" % "sbt-pgp" % "0.8.3")
-
-addSbtPlugin("com.mojolly.scalate" % "xsbt-scalate-generator" % "0.4.2")
+addSbtPlugin("com.mojolly.scalate" % "xsbt-scalate-generator" % "0.5.0")
