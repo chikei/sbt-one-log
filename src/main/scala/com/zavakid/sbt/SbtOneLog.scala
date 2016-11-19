@@ -1,8 +1,8 @@
 package com.zavakid.sbt
 
-import com.zavakid.sbt.IvyGraphMLDependencies._
 import com.zavakid.sbt.LogDepProcess._
-import org.apache.ivy.core.resolve.ResolveOptions
+import net.virtualvoid.sbt.graph.ModuleGraph
+import net.virtualvoid.sbt.graph.DependencyGraphKeys._
 import org.fusesource.scalate.TemplateEngine
 import sbt.Keys._
 import sbt._
@@ -22,14 +22,7 @@ object SbtOneLogKeys {
   //val logbackTestXMLTemplate = settingKey[String]("the logback-test template path")
   val withLogDependencies = settingKey[Seq[sbt.ModuleID]]("with log dependencies")
   val generateLogbackXML = TaskKey[Unit]("generate-logback-xml", "generate logback.xml and logback-test.xml in test if they are not exist")
-
-  // from sbt-dependency-graph
-  val computeIvReportFunction = TaskKey[String => File]("compute-ivy-report-function",
-    "A function which returns the file containing the ivy report from the ivy cache for a given configuration")
-  val computeIvyReport = TaskKey[File]("compute-ivy-report",
-    "A task which returns the location of the ivy report file for a given configuration (default `compile`).")
-  val computeModuleGraph = TaskKey[ModuleGraph]("compute-module-graph",
-    "The dependency graph for a project")
+  val computeModuleGraph = TaskKey[ModuleGraph]("compute-module-graph", "Compute the dependency graph for a project")
 }
 
 object SbtOneLog extends AutoPlugin {
@@ -79,11 +72,13 @@ object SbtOneLog extends AutoPlugin {
 
       val (transformed, newState) = buildStruct.allProjectRefs.filter { p =>
         //FIXME! .task is deprecated
+        val test = extracted.getOpt((computeModuleGraph in p).task)
         extracted.getOpt((computeModuleGraph in p).task).isDefined
       }.foldLeft((extracted.session.mergeSettings, state)) { case ((allSettings, foldedState), p) =>
         // need receive new state
         val (newState, depGraph) = extracted.runTask(computeModuleGraph in p, foldedState)
         val newLibs = compute(depGraph, extracted.get(libraryDependencies in p), p)
+        log.info(newLibs.mkString(","))
         (allSettings.map {
           s => s.key.key match {
             //case s if "libraryDependencies".equals(s.key.key.label) =>
@@ -128,9 +123,7 @@ object SbtOneLog extends AutoPlugin {
     , useScalaLogging := true
     , resolvers += "99-empty" at "http://version99.qos.ch/"
     //, libraryDependencies ++= logs.value
-    , computeIvReportFunction := computeIvReportFunctionImpl.value
-    , computeIvyReport <<= computeIvReportFunction map (_(Compile.toString())) dependsOn (update in Compile)
-    , computeModuleGraph <<= computeIvyReport map (absoluteReportPath andThen IvyGraphMLDependencies.graph)
+    , computeModuleGraph <<= (moduleGraph in Compile)
   ) ++ inConfig(Compile) {
     Seq(
       logbackXMLTemplate := "/sbtonelog/templates/logback.xml.mustache"
@@ -169,46 +162,4 @@ object SbtOneLog extends AutoPlugin {
         out.log.warn(s"force generate is not support yes")
     }
   }
-
-  // =============
-  // from https://github.com/jrudolph/sbt-dependency-graph/blob/master/src/main/scala/net/virtualvoid/sbt/graph/Plugin.scala
-  lazy val computeIvReportFunctionImpl: Def.Initialize[Task[String => File]] = Def.task {
-    val (sbtV, target, projectID, ivyModule, config, streams) = (Keys.sbtVersion.value, Keys.target.value, Keys.projectID.value, Keys.ivyModule.value, Keys.appConfiguration.value, Keys.streams.value)
-    sbtV match {
-      case Version(0, min, fix, _) if min > 12 || (min == 12 && fix >= 3) =>
-        (c: String) => file("%s/resolution-cache/reports/%s-%s-%s.xml".format(target, projectID.organization, crossName(ivyModule), c))
-      case Version(0, min, fix, _) if min == 12 && fix >= 1 && fix < 3 =>
-        ivyModule.withModule(streams.log) { (i, moduleDesc, _) =>
-          val id = ResolveOptions.getDefaultResolveId(moduleDesc)
-          (c: String) => file("%s/resolution-cache/reports/%s/%s-resolved.xml" format(target, id, c))
-        }
-      case _ =>
-        val home = config.provider.scalaProvider.launcher.ivyHome
-        (c: String) => file("%s/cache/%s-%s-%s.xml" format(home, projectID.organization, crossName(ivyModule), c))
-    }
-  }
-
-  val VersionPattern = """(\d+)\.(\d+)\.(\d+)(?:-(.*))?""".r
-
-  object Version {
-    def unapply(str: String): Option[(Int, Int, Int, Option[String])] = str match {
-      case VersionPattern(major, minor, fix, appendix) => Some((major.toInt, minor.toInt, fix.toInt, Option(appendix)))
-      case _ => None
-    }
-  }
-
-  // This is to support 0.13.8's InlineConfigurationWithExcludes while not forcing 0.13.8
-  // taken from: https://github.com/jrudolph/sbt-dependency-graph/pull/68/files
-  type HasModule = {
-    val module: ModuleID
-  }
-  def crossName(ivyModule: IvySbt#Module) = ivyModule.moduleSettings match {
-    case ic: InlineConfiguration => ic.module.name
-    case hm: HasModule if hm.getClass.getName == "sbt.InlineConfigurationWithExcludes" => hm.module.name
-    case _ =>
-      throw new IllegalStateException("sbtOneLog plugin currently only supports InlineConfiguration of ivy settings (the default in sbt, from sbt-dependency-graph)")
-  }
-
-  def absoluteReportPath = (file: File) => file.getAbsolutePath
-
 }

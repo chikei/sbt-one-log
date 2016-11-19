@@ -16,7 +16,7 @@ object Build extends sbt.Build {
        ,"datanucleus" at "http://www.datanucleus.org/downloads/maven2/"
      )
 
-  ) ++ net.virtualvoid.sbt.graph.Plugin.graphSettings
+  )
 
   lazy val root = Project(
     id = "multi_0_13_7",

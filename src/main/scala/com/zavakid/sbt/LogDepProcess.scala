@@ -3,6 +3,7 @@ package com.zavakid.sbt
 import com.zavakid.sbt.SbtOneLogKeys._
 import sbt._
 import Keys._
+import net.virtualvoid.sbt.graph.{ModuleGraph, ModuleId}
 
 import scala.collection.immutable
 
@@ -12,9 +13,9 @@ import scala.collection.immutable
  */
 object LogDepProcess {
 
-  case class ProcessContext(directDep: IvyGraphMLDependencies.ModuleId,
+  case class ProcessContext(directDep: ModuleId,
                             directLib: ModuleID,
-                            graph: IvyGraphMLDependencies.ModuleGraph,
+                            graph: ModuleGraph,
                             libraryDeps: immutable.IndexedSeq[ModuleID],
                             p: ProjectRef,
                             extracted: Extracted
@@ -186,7 +187,7 @@ object LogDepProcess {
 
   //find dependency with not same version
   def haveDependency(context: ProcessContext, find: ModuleID): Boolean = {
-    def doFindDep(moduleIds: Seq[IvyGraphMLDependencies.ModuleId], find: ModuleID, graph: IvyGraphMLDependencies.ModuleGraph): Boolean = moduleIds.exists { mid =>
+    def doFindDep(moduleIds: Seq[ModuleId], find: ModuleID, graph: ModuleGraph): Boolean = moduleIds.exists { mid =>
       if (isSameArtifactButDiffVersion(mid, find)) true
       else doFindDep(graph.dependencyMap(mid).map(_.id), find, graph)
     }
@@ -213,26 +214,26 @@ object LogDepProcess {
     libA.organization.equals(libB.organization) &&
       libA.name.equals(libB.name)
 
-  private def isSameArtifact(libA: IvyGraphMLDependencies.ModuleId, libB: ModuleID)
-                            (implicit additional: (IvyGraphMLDependencies.ModuleId, ModuleID) => Boolean) =
+  private def isSameArtifact(libA: ModuleId, libB: ModuleID)
+                            (implicit additional: (ModuleId, ModuleID) => Boolean) =
     libA.organisation.equals(libB.organization) &&
       libA.name.equals(libB.name) &&
       additional(libA, libB)
 
-  private def isSameArtifactWithVersion(libA: IvyGraphMLDependencies.ModuleId, libB: ModuleID) =
+  private def isSameArtifactWithVersion(libA: ModuleId, libB: ModuleID) =
     isSameArtifact(libA, libB)(isSameVersion)
 
-  private def isSameArtifactButDiffVersion(libA: IvyGraphMLDependencies.ModuleId, libB: ModuleID) =
+  private def isSameArtifactButDiffVersion(libA: ModuleId, libB: ModuleID) =
     isSameArtifact(libA, libB)(isNotSameVersion)
 
-  private def isSameVersion(libA: IvyGraphMLDependencies.ModuleId, libB: ModuleID) =
+  private def isSameVersion(libA: ModuleId, libB: ModuleID) =
     libA.version.equals(libB.revision)
 
-  private def isNotSameVersion(libA: IvyGraphMLDependencies.ModuleId, libB: ModuleID) =
+  private def isNotSameVersion(libA: ModuleId, libB: ModuleID) =
     !isSameVersion(libA, libB)
 
   private implicit def isSameArtifactTrue(a: ModuleID, b: ModuleID): Boolean = true
 
-  private implicit def isSameArtifactTrue(a: IvyGraphMLDependencies.ModuleId, b: ModuleID): Boolean = true
+  private implicit def isSameArtifactTrue(a: ModuleId, b: ModuleID): Boolean = true
 }
 

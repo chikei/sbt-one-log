@@ -9,7 +9,7 @@ object Build extends sbt.Build {
     Seq(
      scalaVersion := "2.10.3"
      ,version := "0.1"
-  ) ++ net.virtualvoid.sbt.graph.Plugin.graphSettings
+  )
 
   lazy val root = Project(
     id = "multi",
