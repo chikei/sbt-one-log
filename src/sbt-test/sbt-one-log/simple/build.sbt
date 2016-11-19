@@ -1,6 +1,6 @@
 import java.io.File
 
-lazy val simple = (project in file(".")).enablePlugins(SbtOneLog)
+lazy val simple = (project in file("."))
 
 version := "0.1"
 

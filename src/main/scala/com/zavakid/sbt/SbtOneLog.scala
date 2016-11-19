@@ -1,7 +1,7 @@
 package com.zavakid.sbt
 
 import com.zavakid.sbt.LogDepProcess._
-import net.virtualvoid.sbt.graph.ModuleGraph
+import net.virtualvoid.sbt.graph.{DependencyGraphPlugin, ModuleGraph}
 import net.virtualvoid.sbt.graph.DependencyGraphKeys._
 import org.fusesource.scalate.TemplateEngine
 import sbt.Keys._
@@ -31,14 +31,12 @@ object SbtOneLog extends AutoPlugin {
 
   val autoImport = SbtOneLogKeys
 
+  override def requires: Plugins = DependencyGraphPlugin
 
-  override def requires: Plugins = super.requires
-
+  override def trigger = allRequirements
 
   override def globalSettings: Seq[Def.Setting[_]] = {
     onLoad := onLoad.value andThen doTask
-    //      onLoad := onLoad.value andThen task
-
   }
 
   var appended = false

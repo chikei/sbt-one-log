@@ -29,7 +29,7 @@ object Build extends sbt.Build {
         , "com.alibaba.otter" % "node.deployer" % "4.2.11"
       )
     )
-  ).enablePlugins(SbtOneLog)
+  )
 
   lazy val module2 = Project(
     id = "module2",
@@ -40,7 +40,7 @@ object Build extends sbt.Build {
         ,"org.apache.commons" % "commons-dbcp2" % "2.0.1"
       )
     )
-  ).enablePlugins(SbtOneLog)
+  )
 
   lazy val module3 = Project(
     id = "module3",
@@ -51,5 +51,5 @@ object Build extends sbt.Build {
       ),
       slf4jVersion := "1.7.7"
     )
-  ).enablePlugins(SbtOneLog)
+  )
 }
