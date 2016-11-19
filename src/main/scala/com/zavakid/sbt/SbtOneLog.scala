@@ -72,8 +72,10 @@ object SbtOneLog extends AutoPlugin {
 
       val (transformed, newState) = buildStruct.allProjectRefs.filter { p =>
         //FIXME! .task is deprecated
-        val test = extracted.getOpt((computeModuleGraph in p).task)
-        extracted.getOpt((computeModuleGraph in p).task).isDefined
+        val t = computeModuleGraph in p
+        val s = Scoped.scopedSetting(t.scope, t.key)
+        extracted.getOpt(s).isDefined
+        //extracted.getOpt((computeModuleGraph in p).task).isDefined
       }.foldLeft((extracted.session.mergeSettings, state)) { case ((allSettings, foldedState), p) =>
         // need receive new state
         val (newState, depGraph) = extracted.runTask(computeModuleGraph in p, foldedState)
@@ -123,7 +125,7 @@ object SbtOneLog extends AutoPlugin {
     , useScalaLogging := true
     , resolvers += "99-empty" at "http://version99.qos.ch/"
     //, libraryDependencies ++= logs.value
-    , computeModuleGraph <<= (moduleGraph in Compile)
+    , computeModuleGraph := (moduleGraph in Compile).value
   ) ++ inConfig(Compile) {
     Seq(
       logbackXMLTemplate := "/sbtonelog/templates/logback.xml.mustache"
