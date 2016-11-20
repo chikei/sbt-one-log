@@ -14,9 +14,9 @@ libraryDependencies ++= Seq(
 )
 
 
-slf4jVersion := "1.7.5"
+oneLogSlf4jVersion := "1.7.5"
 
-logbackVersion := "1.0.3"
+oneLogLogbackVersion := "1.0.3"
 
 val expected = Set[String](
   "org.slf4j:log4j-over-slf4j:1.7.5"

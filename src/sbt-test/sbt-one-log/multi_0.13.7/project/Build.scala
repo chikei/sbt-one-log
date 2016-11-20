@@ -34,7 +34,7 @@ object Build extends sbt.Build {
         ,"commons-beanutils" % "commons-beanutils" % "1.9.1" //dependent commons-logging
         ,"com.alibaba.otter" % "node.deployer" % "4.2.11"
       ),
-      slf4jVersion := "1.7.7"
+      oneLogSlf4jVersion := "1.7.7"
     )
   )
 

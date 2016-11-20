@@ -52,13 +52,13 @@ object SbtOneLog extends AutoPlugin {
 
       val (transformed, newState) = buildStruct.allProjectRefs.filter { p =>
         //FIXME! .task is deprecated
-        val t = computeModuleGraph in p
+        val t = oneLogComputeModuleGraph in p
         val s = Scoped.scopedSetting(t.scope, t.key)
         extracted.getOpt(s).isDefined
         //extracted.getOpt((computeModuleGraph in p).task).isDefined
       }.foldLeft((extracted.session.mergeSettings, state)) { case ((allSettings, foldedState), p) =>
         // need receive new state
-        val (newState, depGraph) = extracted.runTask(computeModuleGraph in p, foldedState)
+        val (newState, depGraph) = extracted.runTask(oneLogComputeModuleGraph in p, foldedState)
         val newLibs = compute(depGraph, extracted.get(libraryDependencies in p), p)
         log.info(newLibs.mkString(","))
         (allSettings.map {
@@ -100,23 +100,23 @@ object SbtOneLog extends AutoPlugin {
 //  }
 
   override def projectSettings: Seq[Setting[_]] = Seq[Setting[_]](
-    slf4jVersion := "1.7.10"
-    , logbackVersion := "1.1.2"
-    , useScalaLogging := true
+    oneLogSlf4jVersion := "1.7.10"
+    , oneLogLogbackVersion := "1.1.2"
+    , oneLogUseScalaLogging := true
     , resolvers += "99-empty" at "http://version99.qos.ch/"
     //, libraryDependencies ++= logs.value
-    , computeModuleGraph := (moduleGraph in Compile).value
+    , oneLogComputeModuleGraph := (moduleGraph in Compile).value
   ) ++ inConfig(Compile) {
     Seq(
-      logbackXMLTemplate := "/sbtonelog/templates/logback.xml.mustache"
-      , logbackFileName := "logback.xml"
-      , generateLogbackXML := generateLogbackXMLImpl.value
+      oneLogLogbackXmlTemplate := "/sbtonelog/templates/logback.xml.mustache"
+      , oneLogLogbackFileName := "logback.xml"
+      , oneLogGenerateLogbackXml := generateLogbackXMLImpl.value
     )
   } ++ inConfig(Test) {
     Seq(
-      logbackXMLTemplate := "/sbtonelog/templates/logback-test.xml.mustache"
-      , logbackFileName := "logback-test.xml"
-      , generateLogbackXML := generateLogbackXMLImpl.value
+      oneLogLogbackXmlTemplate := "/sbtonelog/templates/logback-test.xml.mustache"
+      , oneLogLogbackFileName := "logback-test.xml"
+      , oneLogGenerateLogbackXml := generateLogbackXMLImpl.value
     )
   }
 
@@ -132,12 +132,12 @@ object SbtOneLog extends AutoPlugin {
     //val force = generateLogbackXMLParser.parsed
     val force = false
     val resourceDir = resourceDirectory.value
-    val logbackXML = resourceDir / logbackFileName.value
+    val logbackXML = resourceDir / oneLogLogbackFileName.value
     val context = Map("projectName" -> name.value)
     val engine = new TemplateEngine()
     (force, logbackXML.exists()) match {
       case (false, false) =>
-        generateContent(engine, context, logbackXMLTemplate.value, resourceDir, logbackXML)
+        generateContent(engine, context, oneLogLogbackXmlTemplate.value, resourceDir, logbackXML)
       case (false, true) =>
         out.log.info(s"${logbackXML.toString} is exist")
       case (true, _) =>

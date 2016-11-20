@@ -40,25 +40,25 @@ object LogDepProcess {
   )
 
   val slf4jApiProcess: ProcessStrategy = { context =>
-    val version = context.extracted.get(slf4jVersion in context.p)
+    val version = context.extracted.get(oneLogSlf4jVersion in context.p)
     val slf4jApi = "org.slf4j" % "slf4j-api" % version force()
     context.copy(libraryDeps = addOrReplaceModuleId(slf4jApi, context.libraryDeps))
   }
 
   val logbackCoreProcess: ProcessStrategy = { context =>
-    val version = context.extracted.get(logbackVersion in context.p)
+    val version = context.extracted.get(oneLogLogbackVersion in context.p)
     val logbackCore = "ch.qos.logback" % "logback-core" % version force()
     context.copy(libraryDeps = addOrReplaceModuleId(logbackCore, context.libraryDeps))
   }
 
   val logbackClassicProcess: ProcessStrategy = { context =>
-    val version = context.extracted.get(logbackVersion in context.p)
+    val version = context.extracted.get(oneLogLogbackVersion in context.p)
     val logbackClassic = "ch.qos.logback" % "logback-classic" % version force()
     context.copy(libraryDeps = addOrReplaceModuleId(logbackClassic, context.libraryDeps))
   }
 
   val scalaLoggingProcess: ProcessStrategy = { context =>
-    if(context.extracted.get(useScalaLogging in context.p))
+    if(context.extracted.get(oneLogUseScalaLogging in context.p))
       context.extracted.get(scalaBinaryVersion in context.p) match {
         case "2.11" =>
           context.copy(libraryDeps = addOrReplaceModuleId("com.typesafe.scala-logging" %% "scala-logging" % "3.1.0", context.libraryDeps))
@@ -81,7 +81,7 @@ object LogDepProcess {
   // 4. add "org.slf4j" % "log4j-over-slf4j"
   // 5. add repo?
   val log4jProcess: ProcessStrategy = { context =>
-    val version = context.extracted.get(slf4jVersion in context.p)
+    val version = context.extracted.get(oneLogSlf4jVersion in context.p)
     val log4j = "log4j" % "log4j" % "99-empty" force()
     val log4jOverSlf4j = "org.slf4j" % "log4j-over-slf4j" % version force()
 
@@ -115,7 +115,7 @@ object LogDepProcess {
   // 4. add "org.slf4j" % "jcl-over-slf4j" % slf4jVersion.value force()
   // 5.
   val commonLoggingProcess: ProcessStrategy = { context =>
-    val version = context.extracted.get(slf4jVersion in context.p)
+    val version = context.extracted.get(oneLogSlf4jVersion in context.p)
     val jcl = "commons-logging" % "commons-logging" % "99-empty" force()
     val jclApi = "commons-logging" % "commons-logging-api" % "99-empty" force()
     val jclOverSlf4j = "org.slf4j" % "jcl-over-slf4j" % version force()
@@ -149,7 +149,7 @@ object LogDepProcess {
   // if hava dependency  "org.slf4j" -> "slf4j-jdk14", exclude it
   // add "org.slf4j" % "jul-to-slf4j"
   val julLogProcess: ProcessStrategy = { context =>
-    val version = context.extracted.get(slf4jVersion in context.p)
+    val version = context.extracted.get(oneLogSlf4jVersion in context.p)
     val julSlf4j = "org.slf4j" % "jul-to-slf4j" % version force()
     val newContext = context.copy(libraryDeps = addOrReplaceModuleId(julSlf4j, context.libraryDeps))
     if(haveDependency(newContext, "org.slf4j" % "slf4j-jdk14" % "-1")){

@@ -48,7 +48,7 @@ object Build extends sbt.Build {
       libraryDependencies := libraryDependencies.value ++ Seq(
         "log4j" % "log4j" % "1.2.17" 
       ),
-      slf4jVersion := "1.7.7"
+      oneLogSlf4jVersion := "1.7.7"
     )
   )
 }

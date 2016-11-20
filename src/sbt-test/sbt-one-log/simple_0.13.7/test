@@ -1,6 +1,6 @@
 > check
 > deleteLogback
-> generateLogbackXml
-> test:generateLogbackXml
+> oneLogGenerateLogbackXml
+> test:oneLogGenerateLogbackXml
 > checkLogback
 
