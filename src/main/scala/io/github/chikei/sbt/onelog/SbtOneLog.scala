@@ -60,7 +60,6 @@ object SbtOneLog extends AutoPlugin {
         // need receive new state
         val (newState, depGraph) = extracted.runTask(oneLogComputeModuleGraph in p, foldedState)
         val newLibs = compute(depGraph, extracted.get(libraryDependencies in p), p)
-        log.info(newLibs.mkString(","))
         (allSettings.map {
           s => s.key.key match {
             //case s if "libraryDependencies".equals(s.key.key.label) =>
