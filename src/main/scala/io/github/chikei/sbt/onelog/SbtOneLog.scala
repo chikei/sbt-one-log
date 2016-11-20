@@ -1,33 +1,15 @@
-package com.zavakid.sbt
+package io.github.chikei.sbt.onelog
 
-import com.zavakid.sbt.LogDepProcess._
-import net.virtualvoid.sbt.graph.{DependencyGraphPlugin, ModuleGraph}
+import com.zavakid.sbt.LogDepProcess.{ProcessContext, _}
 import net.virtualvoid.sbt.graph.DependencyGraphKeys._
+import net.virtualvoid.sbt.graph.{DependencyGraphPlugin, ModuleGraph}
 import org.fusesource.scalate.TemplateEngine
 import sbt.Keys._
-import sbt._
-
-/**
- *
- * @author zavakid 2014-11-10
- */
-object SbtOneLogKeys {
-
-  val slf4jVersion = settingKey[String]("which slf4j version to use")
-  val logbackVersion = settingKey[String]("which logback version to use")
-  //val scalaLoggingVersion = settingKey[String]("which scalaLogging version to use")
-  val useScalaLogging = settingKey[Boolean]("add the scalaLogging(https://github.com/typesafehub/scala-logging)")
-  val logbackXMLTemplate = settingKey[String]("the logback template path")
-  val logbackFileName = settingKey[String]("the logback file name")
-  //val logbackTestXMLTemplate = settingKey[String]("the logback-test template path")
-  val withLogDependencies = settingKey[Seq[sbt.ModuleID]]("with log dependencies")
-  val generateLogbackXML = TaskKey[Unit]("generate-logback-xml", "generate logback.xml and logback-test.xml in test if they are not exist")
-  val computeModuleGraph = TaskKey[ModuleGraph]("compute-module-graph", "Compute the dependency graph for a project")
-}
+import sbt.{AutoPlugin, Def, IO, Load, ModuleID, Plugins, Project, ProjectRef, Scoped, State, Task, _}
 
 object SbtOneLog extends AutoPlugin {
 
-  import com.zavakid.sbt.SbtOneLogKeys._
+  import SbtOneLogKeys._
 
   val autoImport = SbtOneLogKeys
 

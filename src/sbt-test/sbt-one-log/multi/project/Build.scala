@@ -1,7 +1,6 @@
 import sbt._
 import sbt.Keys._
-import com.zavakid.sbt._
-import SbtOneLogKeys._
+import io.github.chikei.sbt.onelog.SbtOneLogKeys._
 
 object Build extends sbt.Build {
 

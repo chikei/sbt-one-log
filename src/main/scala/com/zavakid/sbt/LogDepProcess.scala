@@ -1,6 +1,6 @@
 package com.zavakid.sbt
 
-import com.zavakid.sbt.SbtOneLogKeys._
+import io.github.chikei.sbt.onelog.SbtOneLogKeys._
 import sbt._
 import Keys._
 import net.virtualvoid.sbt.graph.{ModuleGraph, ModuleId}
