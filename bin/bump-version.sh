@@ -4,5 +4,5 @@ newVersion=`perl -npe "s/version in ThisBuild\s+:=\s+\"(.*)\"/\1/" version.sbt |
 
 for f in $(/bin/ls src/sbt-test/sbt-one-log/*/project/plugins.sbt); do
   echo $f;
-  perl -i -npe "s/addSbtPlugin\(\"com.zavakid.sbt\".*/addSbtPlugin\(\"com.zavakid.sbt\" % \"sbt-one-log\" % \"$newVersion\"\)/" $f; \
+  perl -i -npe "s/addSbtPlugin\(\"io.github.chikei\".*/addSbtPlugin\(\"io.github.chikei\" % \"sbt-one-log\" % \"$newVersion\"\)/" $f; \
 done;
