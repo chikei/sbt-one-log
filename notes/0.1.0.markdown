@@ -1,0 +1,3 @@
+Initial release:
+
+* Depends on `sbt-dependency-graph` instead of copying code
