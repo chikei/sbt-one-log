@@ -7,11 +7,11 @@ import org.fusesource.scalate.TemplateEngine
 import sbt.Keys._
 import sbt.{AutoPlugin, Def, IO, Load, ModuleID, Plugins, Project, ProjectRef, Scoped, State, Task, _}
 
-object SbtOneLog extends AutoPlugin {
+object OneLog extends AutoPlugin {
 
-  import SbtOneLogKeys._
+  import OneLogKeys._
 
-  val autoImport = SbtOneLogKeys
+  val autoImport = OneLogKeys
 
   override def requires: Plugins = DependencyGraphPlugin
 
@@ -23,7 +23,7 @@ object SbtOneLog extends AutoPlugin {
 
   var appended = false
   val doTask: State => State = { state =>
-    if (SbtOneLog.appended)
+    if (OneLog.appended)
       state
     else {
       import state.globalLogging.{full => log}
@@ -73,7 +73,7 @@ object SbtOneLog extends AutoPlugin {
         }, newState)
       }
 
-      SbtOneLog.appended = true
+      OneLog.appended = true
       //extracted.append(appendedSettings, state)
       val newStructure = Load.reapply(transformed, extracted.structure)(extracted.showKey)
       log.info("sbt-one-log finished process")

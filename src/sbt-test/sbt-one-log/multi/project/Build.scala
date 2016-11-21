@@ -1,6 +1,6 @@
 import sbt._
 import sbt.Keys._
-import io.github.chikei.sbt.onelog.SbtOneLogKeys._
+import io.github.chikei.sbt.onelog.OneLogKeys._
 
 object Build extends sbt.Build {
 

@@ -3,7 +3,7 @@ package io.github.chikei.sbt.onelog
 import net.virtualvoid.sbt.graph.ModuleGraph
 import sbt.{TaskKey, _}
 
-object SbtOneLogKeys {
+object OneLogKeys {
 
   val oneLogSlf4jVersion = settingKey[String]("which slf4j version to use")
   val oneLogLogbackVersion = settingKey[String]("which logback version to use")
