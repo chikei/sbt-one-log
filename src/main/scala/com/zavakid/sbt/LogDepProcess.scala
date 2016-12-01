@@ -60,8 +60,10 @@ object LogDepProcess {
   val scalaLoggingProcess: ProcessStrategy = { context =>
     if(context.extracted.get(oneLogUseScalaLogging in context.p))
       context.extracted.get(scalaBinaryVersion in context.p) match {
+        case "2.12" =>
+          context.copy(libraryDeps = addOrReplaceModuleId("com.typesafe.scala-logging" %% "scala-logging" % "3.5.0", context.libraryDeps))
         case "2.11" =>
-          context.copy(libraryDeps = addOrReplaceModuleId("com.typesafe.scala-logging" %% "scala-logging" % "3.1.0", context.libraryDeps))
+          context.copy(libraryDeps = addOrReplaceModuleId("com.typesafe.scala-logging" %% "scala-logging" % "3.5.0", context.libraryDeps))
         case "2.10" =>
           Option{
             addOrReplaceModuleId("com.typesafe.scala-logging" %% "scala-logging-api" % "2.1.2", context.libraryDeps)
