@@ -2,7 +2,8 @@ import ScalateKeys._
 
 sbtPlugin := true
 organization := "io.github.chikei"
-organizationName := "sbt-one-log"
+name := "sbt-one-log"
+licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 organizationHomepage := Some(new URL("https://github.com/chikei/sbt-one-log/"))
 description := "A sbt plugin for uniform log lib"
 scalaVersion := "2.10.6"
@@ -10,6 +11,9 @@ scalacOptions ++= Seq("-encoding", "UTF-8", "-deprecation", "-unchecked")
 publishArtifact in Test := false
 crossPaths := false
 incOptions := incOptions.value.withNameHashing(true)
+publishMavenStyle := false
+bintrayRepository := "sbt-plugins"
+bintrayOrganization in bintray := None
 
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.2")
 

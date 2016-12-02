@@ -5,7 +5,7 @@ val expected = Set[String](
   ,"ch.qos.logback:logback-classic:1.1.2"
   ,"ch.qos.logback:logback-core:1.1.2"
   ,"log4j:log4j:99-empty"
-  ,"com.typesafe.scala-logging:scala-logging_2.11:3.1.0"
+  ,"com.typesafe.scala-logging:scala-logging_2.11:3.5.0"
 )
 
 val excluded = Set[(String,String)](
