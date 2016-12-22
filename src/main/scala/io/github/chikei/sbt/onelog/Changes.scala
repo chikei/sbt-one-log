@@ -126,7 +126,11 @@ object Changes {
       }
     }
 
-    Updates(overrides = overrides ++ Map(logbackClassic -> ctx.logbackVersion))
+    val withLogback: Map[ModuleId, String] =
+      if(overrides.nonEmpty) overrides ++ Map(logbackClassic -> ctx.logbackVersion)
+      else Map.empty
+
+    Updates(overrides = withLogback)
   }
 
   // 1. exclude any "org.slf4j" % "slf4j-log4j12"
