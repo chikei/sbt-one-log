@@ -1,1 +1,1 @@
-addSbtPlugin("io.github.chikei" % "sbt-one-log" % "0.2.1")
+addSbtPlugin("io.github.chikei" % "sbt-one-log" % "0.2.2-SNAPSHOT")
