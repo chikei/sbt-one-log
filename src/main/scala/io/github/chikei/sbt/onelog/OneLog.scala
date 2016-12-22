@@ -126,7 +126,7 @@ object OneLog extends AutoPlugin {
       oneLogLogbackFileName := "logback-test.xml",
       oneLogGenerateLogbackXml := generateLogbackXMLImpl.value
     )
-  } ++ Seq(Compile, Test, IntegrationTest, Runtime, Provided, Optional).flatMap{ config =>
+  } ++ Seq(Compile, Test, Runtime, Provided, Optional).flatMap{ config =>
     inConfig(config)(Seq(
       oneLogComputeChanges :=
           Changes.generate(moduleGraph.value, libraryDependencies.value,
