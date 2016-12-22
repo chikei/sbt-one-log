@@ -144,7 +144,8 @@ object OneLog extends AutoPlugin {
       oneLogWriteChange := {
         val f = oneLogWriteChangesFile.value
         val p = new PrintWriter(f, "UTF-8")
-        p.write(ongLogChangesAscii.value)
+        p.write(ChangesLayout.ascii(oneLogComputeChanges.value, oneLogRenderDependency.value, oneLogRenderOverride.value,
+          false))
         p.close()
       }
     ))

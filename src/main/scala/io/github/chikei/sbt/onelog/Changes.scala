@@ -46,10 +46,12 @@ object Changes {
     val directDeps = roots.flatMap(d => deps(d.id))
       //.filter(_.evictedByVersion.isEmpty)
       .filterNot(d => d.id.organisation == "org.scala-lang")
-      .filter(dep => // filter sub projects
-        libraryDependencies.exists(lib => lib.organization == dep.id.organisation &&
-          lib.name == dep.id.name)
-      )
+      // sbt does ***NOT*** propagate dependencyOverrides through dependsOn
+      // we need explict override on each project
+//      .filter(dep => // filter sub projects
+//        libraryDependencies.exists(lib => lib.organization == dep.id.organisation &&
+//          lib.name == dep.id.name)
+//      )
 
     val ctx = UpdatesContext(graph, scalaBinaryVersion, slf4jVersion, logbackVersion, scalaLoggingVersion)
     directDeps.foldLeft(Updates()) { case (u, dep) =>
